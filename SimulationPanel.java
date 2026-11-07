@@ -14,6 +14,7 @@ public class SimulationPanel extends JPanel {
     private int startRow;
     private int startCol;
     private boolean drawingLine = false;
+    private Timer timer;
 
     public SimulationPanel(Physics sandbox) {
         this.sandbox = sandbox;
@@ -138,7 +139,7 @@ public void mouseReleased(MouseEvent e) {
         addMouseMotionListener(mouse);
 
         // Simulation Timer
-        Timer timer = new Timer(16, e -> {
+        timer = new Timer(16, e -> {
             try {
                 sandbox.step();
                 repaint();
@@ -203,6 +204,14 @@ public void mouseReleased(MouseEvent e) {
 
     public void setBrushSize(int size) {
         brushSize = size;
+    }
+
+    public void setPaused(boolean paused) {
+        if (paused) {
+            timer.stop();
+        } else {
+            timer.start();
+        }
     }
 
 }

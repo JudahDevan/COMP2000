@@ -13,6 +13,7 @@ public class UI extends JFrame {
     private final Color BACKGROUND = new Color(30, 33, 40);
     private final Color PANEL_COLOR = new Color(39, 43, 52);
     private final Color TEXT = new Color(165, 172, 185);
+    private boolean paused = false;
 
     public UI(int width, int height, Physics sandbox) {
         this.sandbox = sandbox;
@@ -100,11 +101,27 @@ public class UI extends JFrame {
             simPanel.repaint();
         });
 
-        JPanel toolPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 10));
+        //Pause Button
+        JButton pauseButton = createButton("Pause", new Color(173, 216, 230));
+        pauseButton.setForeground(Color.BLACK);
+        pauseButton.addActionListener(e -> {
+            paused = !paused;
+            pauseButton.setText(paused ? "Resume" : "Pause");
+            simPanel.setPaused(paused);
+            if (paused) {
+                sandbox.stopSimulation();
+            } else {
+                sandbox.startSimulation(simPanel::repaint);
+            }
+        });
+
+        JPanel toolPanel = new JPanel(new GridLayout(0, 1, 0, 8));
         toolPanel.setBackground(PANEL_COLOR);
+        toolPanel.setBorder(new EmptyBorder(0, 40, 10, 40));
 
         toolPanel.add(eraserButton);
         toolPanel.add(clearButton);
+        toolPanel.add(pauseButton);
 
         sidePanel.add(toolPanel, BorderLayout.SOUTH);
 
