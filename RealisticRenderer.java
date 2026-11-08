@@ -77,7 +77,7 @@ public class RealisticRenderer {
         return e.getColor().getRGB(); // Fire and Explosion keep their own flickering colours
     }
 
-    // Packs alpha, red, green, blue (each kept between 0 and 255) into one colour number
+    
     private static int argb(double... parts) {
         int out = 0;
         for (double p : parts) out = (out << 8) | (int) Math.max(0, Math.min(255, p));

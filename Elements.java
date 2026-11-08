@@ -200,6 +200,38 @@ class Glass extends Elements {
     public boolean floatsUp() {
         return false;
     }
+
+    @Override
+    public boolean fallsDown() { // [NEW] glass falls
+        return true;
+    }
+
+    @Override
+    public void step(Physics physics, int row, int col) { 
+        int side = Math.random() < 0.5 ? -1 : 1; // pick left or right at random
+
+        if (canSinkInto(physics, row + 1, col)) { // fall straight down through air or water
+            if (physics.isEmpty(row + 1, col) || Math.random() < 0.5) { // water slows it down
+                swap(physics, row, col, row + 1, col);
+            }
+        } else if (canSinkInto(physics, row + 1, col + side) && canSinkInto(physics, row + 2, col + side)) {
+            // solid chunks only slide off a steep edge, so glass piles up steeper than sand
+            swap(physics, row, col, row + 1, col + side);
+        }
+    }
+
+    
+    private boolean canSinkInto(Physics physics, int row, int col) {
+        return row < Physics.ROWS && col >= 0 && col < Physics.COLS
+                && (physics.grid[row][col] == null || physics.grid[row][col] instanceof Water);
+    }
+
+    
+    private void swap(Physics physics, int row1, int col1, int row2, int col2) {
+        Elements temp = physics.grid[row1][col1];
+        physics.grid[row1][col1] = physics.grid[row2][col2];
+        physics.grid[row2][col2] = temp;
+    }
 }
 
 class Wall extends Elements {
