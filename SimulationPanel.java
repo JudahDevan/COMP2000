@@ -34,7 +34,9 @@ public class SimulationPanel extends JPanel {
                                     sandbox.grid[newRow][newCol] = null;
                                 } else {
                                     Elements selected = sandbox.tester.get();
-                                    sandbox.grid[newRow][newCol] = selected instanceof Fire ? new Fire() : selected;
+                                    if (canReplace(sandbox.grid[newRow][newCol], selected)) {
+                                        sandbox.grid[newRow][newCol] = selected instanceof Fire ? new Fire() : selected;
+                                    }
                                 }
                             }
                         }
@@ -196,6 +198,16 @@ public void mouseReleased(MouseEvent e) {
             framesSinceUpdate = 0;
             lastFpsUpdate = currentTime;
         }
+    }
+
+    // Walls and glass are fixed, sand sinks through water and gas, water rises through gas only
+    private static boolean canReplace(Elements existing, Elements selected) {
+        if (existing == null) return true;
+        if (existing instanceof Wall || existing instanceof Glass) return false;
+        if (existing.getClass() == selected.getClass()) return false;
+        if (selected instanceof Sand) return existing instanceof Water || existing instanceof Gas;
+        if (selected instanceof Water) return existing instanceof Gas;
+        return false;
     }
 
     public int getFps() {
